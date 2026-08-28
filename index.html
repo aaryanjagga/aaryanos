@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AaryanOS</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- BOOT SCREEN -->
+<div id="boot-screen">
+  <div class="boot-mark">
+    <div class="boot-ring"></div>
+    <span>A</span>
+  </div>
+  <div class="boot-label">AaryanOS</div>
+</div>
+
+<!-- DESKTOP -->
+<div id="desktop">
+
+  <div id="wallpaper"></div>
+
+  <!-- Desktop Icons -->
+  <div id="desktop-icons">
+    <div class="desktop-icon" data-app="explorer" tabindex="0">
+      <div class="icon-glyph"><i class="fa-regular fa-folder-open"></i></div>
+      <span>File Explorer</span>
+    </div>
+    <div class="desktop-icon" data-app="terminal" tabindex="0">
+      <div class="icon-glyph"><i class="fa-solid fa-terminal"></i></div>
+      <span>Terminal</span>
+    </div>
+    <div class="desktop-icon" data-app="settings" tabindex="0">
+      <div class="icon-glyph"><i class="fa-solid fa-sliders"></i></div>
+      <span>Settings</span>
+    </div>
+    <div class="desktop-icon" data-app="calculator" tabindex="0">
+      <div class="icon-glyph"><i class="fa-solid fa-calculator"></i></div>
+      <span>Calculator</span>
+    </div>
+    <div class="desktop-icon" data-app="editor" tabindex="0">
+      <div class="icon-glyph"><i class="fa-regular fa-file-lines"></i></div>
+      <span>Text Editor</span>
+    </div>
+    <div class="desktop-icon" data-app="browser" tabindex="0">
+      <div class="icon-glyph"><i class="fa-solid fa-compass"></i></div>
+      <span>Browser</span>
+    </div>
+  </div>
+
+  <!-- Windows mount point -->
+  <div id="window-layer"></div>
+
+  <!-- Start Menu -->
+  <div id="start-menu" class="hidden">
+    <div class="start-top">
+      <div class="start-user">
+        <div class="start-avatar">A</div>
+        <div>
+          <div class="start-username">Aaryan</div>
+          <div class="start-usersub">AaryanOS Session</div>
+        </div>
+      </div>
+      <div class="start-search">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" id="start-search-input" placeholder="Search apps...">
+      </div>
+    </div>
+
+    <div class="start-body">
+      <div class="start-section-label">Pinned</div>
+      <div class="start-grid" id="start-app-grid">
+        <!-- populated by JS -->
+      </div>
+    </div>
+
+    <div class="start-bottom">
+      <div class="start-power" id="power-btn">
+        <i class="fa-solid fa-power-off"></i>
+        <span>Power</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Taskbar -->
+  <div id="taskbar">
+    <div class="taskbar-left">
+      <button id="start-btn" class="taskbar-btn start-btn" aria-label="Start">
+        <span class="orbit-mark"><span class="orbit-core"></span></span>
+      </button>
+      <button id="search-btn" class="taskbar-btn" aria-label="Search">
+        <i class="fa-solid fa-magnifying-glass"></i>
+      </button>
+      <div class="taskbar-divider"></div>
+      <div id="pinned-apps" class="pinned-apps">
+        <!-- populated by JS -->
+      </div>
+    </div>
+
+    <div class="taskbar-center" id="running-apps">
+      <!-- running app tabs populated by JS -->
+    </div>
+
+    <div class="taskbar-right">
+      <div class="tray-icons">
+        <i class="fa-solid fa-wifi" title="Wi-Fi"></i>
+        <i class="fa-solid fa-volume-high" title="Sound"></i>
+        <i class="fa-solid fa-battery-three-quarters" title="Battery"></i>
+      </div>
+      <div class="taskbar-divider"></div>
+      <div id="clock" class="clock">
+        <div id="clock-time">--:--</div>
+        <div id="clock-date">--- --, ----</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- App window templates -->
+<template id="tpl-explorer">
+  <div class="app-explorer">
+    <div class="explorer-sidebar">
+      <div class="explorer-nav-item active" data-folder="home"><i class="fa-solid fa-house"></i> Home</div>
+      <div class="explorer-nav-item" data-folder="desktop"><i class="fa-solid fa-desktop"></i> Desktop</div>
+      <div class="explorer-nav-item" data-folder="documents"><i class="fa-solid fa-folder"></i> Documents</div>
+      <div class="explorer-nav-item" data-folder="downloads"><i class="fa-solid fa-download"></i> Downloads</div>
+    </div>
+    <div class="explorer-main">
+      <div class="explorer-toolbar">
+        <button class="explorer-back" title="Back"><i class="fa-solid fa-arrow-left"></i></button>
+        <div class="explorer-path">This PC</div>
+      </div>
+      <div class="explorer-grid"></div>
+    </div>
+  </div>
+</template>
+
+<template id="tpl-terminal">
+  <div class="app-terminal">
+    <div class="terminal-output"></div>
+    <div class="terminal-inputline">
+      <span class="terminal-prompt">aaryan@aaryanos:~$</span>
+      <input type="text" class="terminal-input" autocomplete="off" spellcheck="false">
+    </div>
+  </div>
+</template>
+
+<template id="tpl-settings">
+  <div class="app-settings">
+    <div class="settings-sidebar">
+      <div class="settings-nav-item active" data-pane="appearance"><i class="fa-solid fa-palette"></i> Appearance</div>
+      <div class="settings-nav-item" data-pane="about"><i class="fa-solid fa-circle-info"></i> System Info</div>
+    </div>
+    <div class="settings-main">
+      <div class="settings-pane" data-pane="appearance">
+        <h2>Appearance</h2>
+        <div class="settings-block">
+          <div class="settings-label">Theme</div>
+          <div class="theme-toggle-row">
+            <button class="theme-opt" data-theme="dark">Dark</button>
+            <button class="theme-opt" data-theme="light">Light</button>
+          </div>
+        </div>
+        <div class="settings-block">
+          <div class="settings-label">Wallpaper</div>
+          <div class="wallpaper-grid"></div>
+        </div>
+      </div>
+      <div class="settings-pane hidden" data-pane="about">
+        <h2>System Information</h2>
+        <div class="about-grid">
+          <div><span>OS</span><b>AaryanOS 0.1</b></div>
+          <div><span>Build</span><b>Alpha</b></div>
+          <div><span>Engine</span><b>Vanilla JS</b></div>
+          <div><span>Kernel</span><b>Simulated</b></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<template id="tpl-calculator">
+  <div class="app-calculator">
+    <div class="calc-display">
+      <div class="calc-expr" id="calc-expr"></div>
+      <div class="calc-result" id="calc-result">0</div>
+    </div>
+    <div class="calc-buttons">
+      <button data-key="clear" class="calc-btn calc-fn">C</button>
+      <button data-key="sign" class="calc-btn calc-fn">±</button>
+      <button data-key="percent" class="calc-btn calc-fn">%</button>
+      <button data-key="/" class="calc-btn calc-op">÷</button>
+
+      <button data-key="7" class="calc-btn">7</button>
+      <button data-key="8" class="calc-btn">8</button>
+      <button data-key="9" class="calc-btn">9</button>
+      <button data-key="*" class="calc-btn calc-op">×</button>
+
+      <button data-key="4" class="calc-btn">4</button>
+      <button data-key="5" class="calc-btn">5</button>
+      <button data-key="6" class="calc-btn">6</button>
+      <button data-key="-" class="calc-btn calc-op">−</button>
+
+      <button data-key="1" class="calc-btn">1</button>
+      <button data-key="2" class="calc-btn">2</button>
+      <button data-key="3" class="calc-btn">3</button>
+      <button data-key="+" class="calc-btn calc-op">+</button>
+
+      <button data-key="0" class="calc-btn calc-zero">0</button>
+      <button data-key="." class="calc-btn">.</button>
+      <button data-key="=" class="calc-btn calc-eq">=</button>
+    </div>
+  </div>
+</template>
+
+<template id="tpl-editor">
+  <div class="app-editor">
+    <div class="editor-toolbar">
+      <button class="editor-btn" data-action="new"><i class="fa-regular fa-file"></i> New</button>
+      <button class="editor-btn" data-action="save"><i class="fa-regular fa-floppy-disk"></i> Save</button>
+      <button class="editor-btn" data-action="open"><i class="fa-regular fa-folder-open"></i> Open</button>
+      <button class="editor-btn" data-action="clear"><i class="fa-solid fa-eraser"></i> Clear</button>
+      <span class="editor-status" data-status></span>
+    </div>
+    <textarea class="editor-textarea" placeholder="Start typing..."></textarea>
+  </div>
+</template>
+
+<template id="tpl-browser">
+  <div class="app-browser">
+    <div class="browser-toolbar">
+      <button class="browser-btn" data-action="back"><i class="fa-solid fa-arrow-left"></i></button>
+      <button class="browser-btn" data-action="forward"><i class="fa-solid fa-arrow-right"></i></button>
+      <button class="browser-btn" data-action="refresh"><i class="fa-solid fa-rotate-right"></i></button>
+      <div class="browser-address"><i class="fa-solid fa-lock"></i><input type="text" class="browser-address-input" value="aaryan://start"></div>
+    </div>
+    <div class="browser-page"></div>
+  </div>
+</template>
+
+<script src="script.js"></script>
+</body>
+</html>
