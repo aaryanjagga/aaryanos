@@ -159,7 +159,7 @@ Customize your operating system.
 Clone the repository:
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/aaryanjagga/aaryanos
 ```
 
 Open the project folder:
